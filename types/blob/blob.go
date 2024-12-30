@@ -13,7 +13,7 @@ import (
 	"github.com/gatechain/gatenode-openrpc/types/proofs"
 	"github.com/gatechain/gatenode-openrpc/types/share"
 
-	"github.com/celestiaorg/go-square/blob"
+	squareBlob "github.com/celestiaorg/go-square/blob"
 	"github.com/celestiaorg/go-square/inclusion"
 	"github.com/celestiaorg/go-square/merkle"
 )
@@ -73,9 +73,9 @@ type Proof []*nmt.Proof
 
 func (p Proof) Len() int { return len(p) }
 
-// Blob represents any application-specific binary data that anyone can submit to Celestia.
+// Blob represents any application-specific binary data that anyone can submit to Gatenode.
 type Blob struct {
-	blob.Blob `json:"blob"`
+	squareBlob.Blob `json:"blob"`
 
 	Commitment Commitment `json:"commitment"`
 
@@ -103,7 +103,7 @@ func NewBlob(shareVersion uint8, namespace share.Namespace, data []byte) (*Blob,
 		return nil, err
 	}
 
-	blob := blob.Blob{
+	blob := squareBlob.Blob{
 		NamespaceId:      namespace.ID(),
 		Data:             data,
 		ShareVersion:     uint32(shareVersion),

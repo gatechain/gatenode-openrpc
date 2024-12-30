@@ -14,17 +14,18 @@ type Balance = sdk.Coin
 
 type Tx []byte
 
+type RspBroadcastTx struct {
+	TxHash string `json:"txhash,omitempty"`
+	Code   uint32 `json:"code,omitempty"`
+	Data   string `json:"data,omitempty"`
+	Height uint64 `json:"height,omitempty"`
+	RawLog string `json:"raw_log,omitempty"`
+}
+
 // TxResponse is an alias to the TxResponse type from Cosmos-SDK.
 type TxResponse = sdk.TxResponse
 
-// Address is an alias to the Address type from Cosmos-SDK.
-type Address = sdk.Address
-
 // ValAddress is an alias to the ValAddress type from Cosmos-SDK.
-type ValAddress = sdk.ValAddress
-
-// AccAddress is an alias to the AccAddress type from Cosmos-SDK.
-type AccAddress = sdk.AccAddress
 
 // Int is an alias to the Int type from Cosmos-SDK.
 type Int = math.Int

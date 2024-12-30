@@ -2,9 +2,9 @@ package header
 
 import (
 	"encoding/json"
-	"github.com/gatechain/crypto"
-	"github.com/gatechain/gatemint/data/bookkeeping"
 	"time"
+
+	"github.com/gatechain/crypto"
 
 	"github.com/celestiaorg/go-header"
 
@@ -15,10 +15,10 @@ import (
 // RawHeader is an alias to core.Header. It is
 // "raw" because it is not yet wrapped to include
 // the DataAvailabilityHeader.
-type RawHeader = bookkeeping.BlockHeader
+type RawHeader = BlockHeader
 
 // ExtendedHeader represents a wrapped "raw" header that includes
-// information necessary for Celestia Nodes to be notified of new
+// information necessary for Gatenode Nodes to be notified of new
 // block headers and perform Data Availability Sampling.
 type ExtendedHeader struct {
 	RawHeader    `json:"header"`

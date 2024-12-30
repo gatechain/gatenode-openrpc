@@ -40,13 +40,35 @@ type ShareProof struct {
 	Data [][]byte `json:"data"`
 	// ShareProofs are NMT proofs that the shares in Data exist in a set of
 	// rows. There will be one ShareProof per row that the shares occupy.
-	ShareProofs []*nmt.Proof `json:"share_proofs"`
+	ShareProofs []*NMTProof `json:"share_proofs"`
 	// NamespaceID is the namespace id of the shares being proven. This
 	// namespace id is used when verifying the proof. If the namespace id doesn't
 	// match the namespace of the shares, the proof will fail verification.
 	NamespaceID      []byte          `json:"namespace_id"`
 	RowProof         proofs.RowProof `json:"row_proof"`
 	NamespaceVersion uint32          `json:"namespace_version"`
+}
+
+// NMTProof is a proof of a namespace.ID in an NMT.
+// In case this proof proves the absence of a namespace.ID
+// in a tree it also contains the leaf hashes of the range
+// where that namespace would be.
+type NMTProof struct {
+	// Start index of this proof.
+	Start int32 `protobuf:"varint,1,opt,name=start,proto3" json:"start,omitempty"`
+	// End index of this proof.
+	End int32 `protobuf:"varint,2,opt,name=end,proto3" json:"end,omitempty"`
+	// Nodes that together with the corresponding leaf values can be used to
+	// recompute the root and verify this proof. Nodes should consist of the max
+	// and min namespaces along with the actual hash, resulting in each being 48
+	// bytes each
+	Nodes [][]byte `protobuf:"bytes,3,rep,name=nodes,proto3" json:"nodes,omitempty"`
+	// leafHash are nil if the namespace is present in the NMT. In case the
+	// namespace to be proved is in the min/max range of the tree but absent, this
+	// will contain the leaf hash necessary to verify the proof of absence. Leaf
+	// hashes should consist of the namespace along with the actual hash,
+	// resulting 40 bytes total.
+	LeafHash []byte `protobuf:"bytes,4,opt,name=leaf_hash,json=leafHash,proto3" json:"leaf_hash,omitempty"`
 }
 
 // NamespacedShares represents all shares with proofs within a specific namespace of an EDS.
