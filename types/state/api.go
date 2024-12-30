@@ -2,6 +2,7 @@ package state
 
 import (
 	"context"
+	"github.com/gatechain/gatenode-openrpc/types/blob"
 
 	squareblob "github.com/celestiaorg/go-square/blob"
 )
@@ -24,6 +25,6 @@ type API struct {
 	SubmitPayForBlob func(
 		ctx context.Context,
 		blobs []*squareblob.Blob,
-		config *TxConfig,
+		config *blob.SubmitOptions,
 	) (*RspBroadcastTx, error) `perm:"write"`
 }

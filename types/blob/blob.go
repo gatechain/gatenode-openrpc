@@ -18,18 +18,6 @@ import (
 	"github.com/celestiaorg/go-square/merkle"
 )
 
-const (
-	// NMTIgnoreMaxNamespace is currently used value for IgnoreMaxNamespace option in NMT.
-	// IgnoreMaxNamespace defines whether the largest possible Namespace MAX_NID should be 'ignored'.
-	// If set to true, this allows for shorter proofs in particular use-cases.
-	NMTIgnoreMaxNamespace = true
-)
-
-var (
-	ErrBlobNotFound = errors.New("blob: not found")
-	ErrInvalidProof = errors.New("blob: invalid proof")
-)
-
 // CommitmentProof is an inclusion proof of a commitment to the data root.
 type CommitmentProof struct {
 	// SubtreeRoots are the subtree roots of the blob's data that are

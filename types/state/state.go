@@ -58,7 +58,6 @@ type Delegation struct {
 // NOTE: never use new(Dec) or else we will panic unmarshalling into the
 // nil embedded big.Int
 type Dec struct {
-	// TODO(tzdybal) - this type needs more attention!
 	i *big.Int //nolint:unused,structcheck
 }
 

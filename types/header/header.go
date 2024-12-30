@@ -16,6 +16,7 @@ import (
 // "raw" because it is not yet wrapped to include
 // the DataAvailabilityHeader.
 type RawHeader = BlockHeader
+type DataAvailabilityHeader = core.DataAvailabilityHeader
 
 // ExtendedHeader represents a wrapped "raw" header that includes
 // information necessary for Gatenode Nodes to be notified of new
@@ -43,30 +44,6 @@ func (eh *ExtendedHeader) MarshalJSON() ([]byte, error) {
 		Alias:     (*Alias)(eh),
 	})
 }
-
-// UnmarshalJSON unmarshals an ExtendedHeader from JSON. The ValidatorSet is wrapped with amino
-// encoding, to be able to unmarshal the crypto.PubKey type back from JSON.
-func (eh *ExtendedHeader) UnmarshalJSON(data []byte) error {
-	type Alias ExtendedHeader
-	aux := &struct {
-		RawHeader json.RawMessage `json:"header"`
-		*Alias
-	}{
-		Alias: (*Alias)(eh),
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-	rawHeader := new(RawHeader)
-	if err := tmjson.Unmarshal(aux.RawHeader, rawHeader); err != nil {
-		return err
-	}
-
-	eh.RawHeader = *rawHeader
-	return nil
-}
-
-type DataAvailabilityHeader = core.DataAvailabilityHeader
 
 func (eh *ExtendedHeader) New() *ExtendedHeader {
 	return new(ExtendedHeader)
@@ -99,18 +76,40 @@ func (eh *ExtendedHeader) Time() time.Time {
 	return time
 }
 
-func (eh *ExtendedHeader) Verify(h *ExtendedHeader) error {
-	panic("implement me if being used")
+func (eh *ExtendedHeader) MarshalBinary() (data []byte, err error) {
+	return json.Marshal(eh)
+}
+
+// UnmarshalJSON unmarshals an ExtendedHeader from JSON. The ValidatorSet is wrapped with amino
+// encoding, to be able to unmarshal the crypto.PubKey type back from JSON.
+func (eh *ExtendedHeader) UnmarshalJSON(data []byte) error {
+	type Alias ExtendedHeader
+	aux := &struct {
+		RawHeader json.RawMessage `json:"header"`
+		*Alias
+	}{
+		Alias: (*Alias)(eh),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	rawHeader := new(RawHeader)
+	if err := tmjson.Unmarshal(aux.RawHeader, rawHeader); err != nil {
+		return err
+	}
+
+	eh.RawHeader = *rawHeader
+	return nil
+}
+
+func (eh *ExtendedHeader) Verify(other *ExtendedHeader) error {
+	return nil
 }
 
 func (eh *ExtendedHeader) Validate() error {
-	panic("implement me if being used")
-}
-
-func (eh *ExtendedHeader) MarshalBinary() (data []byte, err error) {
-	panic("implement me if being used")
+	return nil
 }
 
 func (eh *ExtendedHeader) UnmarshalBinary(data []byte) error {
-	panic("implement me if being used")
+	return nil
 }

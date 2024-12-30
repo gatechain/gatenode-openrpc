@@ -27,9 +27,4 @@ type API struct {
 		namespace share.Namespace,
 		shareCommitment []byte,
 	) (*CommitmentProof, error) `perm:"read"`
-	// Subscribe to published blobs from the given namespace as they are included.
-	Subscribe func(
-		context.Context,
-		share.Namespace,
-	) (<-chan *SubscriptionResponse, error) `perm:"read"`
 }

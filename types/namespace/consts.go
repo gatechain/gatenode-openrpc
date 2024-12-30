@@ -2,7 +2,6 @@ package namespace
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"math"
 )
 
@@ -66,10 +65,4 @@ var (
 		Version: math.MaxUint8,
 		ID:      bytes.Repeat([]byte{0xFF}, NamespaceIDSize),
 	}
-)
-
-var (
-	// NewBaseHashFunc is the base hash function used by NMT. Change accordingly
-	// if another hash.Hash should be used as a base hasher in the NMT.
-	NewBaseHashFunc = sha256.New
 )

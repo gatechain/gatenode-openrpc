@@ -47,7 +47,7 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 	client = constructedClient.(Client)
 
 	// let's post to 0xDEADBEEF namespace
-	namespace, err := share.NewBlobNamespaceV0([]byte{0xDE, 0xAD, 0xBE, 0xEF})
+	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
 	if err != nil {
 		return err
 	}
