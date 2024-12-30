@@ -34,4 +34,6 @@ type API struct {
 	SyncWait func(ctx context.Context) error `perm:"read"`
 	// NetworkHead provides the Syncer's view of the current network head.
 	NetworkHead func(ctx context.Context) (*ExtendedHeader, error) `perm:"read"`
+	// Subscribe to recent ExtendedHeaders from the network.
+	Subscribe func(ctx context.Context) (<-chan *ExtendedHeader, error) `perm:"read"`
 }
