@@ -15,7 +15,6 @@ require (
 	github.com/celestiaorg/rsmt2d v0.11.0
 	github.com/cometbft/cometbft v0.37.2
 	github.com/filecoin-project/go-jsonrpc v0.5.0
-	github.com/gatechain/crypto v0.1.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/libp2p/go-libp2p v0.36.1
 	github.com/ory/dockertest/v3 v3.10.0
@@ -25,20 +24,9 @@ require (
 )
 
 require (
-	github.com/ChainSafe/go-schnorrkel v1.0.0 // indirect
-	github.com/btcsuite/btcd v0.20.1-beta // indirect
-	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d // indirect
-	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
-	github.com/ethereum/go-ethereum v1.10.8 // indirect
-	github.com/gatechain/go-deadlock v0.2.1-0.20181221160745-78d8cb5e2759 // indirect
-	github.com/gtank/merlin v0.1.1 // indirect
-	github.com/gtank/ristretto255 v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.11.0 // indirect
-	github.com/maoxs2/go-ripemd v0.0.0-20200227063901-215d858ac634 // indirect
-	github.com/mimoo/StrobeGo v0.0.0-20210601165009-122bf33a46e0 // indirect
 	github.com/multiformats/go-multiaddr-fmt v0.1.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/tendermint/go-amino v0.15.1 // indirect
 )
 
 require (

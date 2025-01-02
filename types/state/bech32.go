@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	errors2 "errors"
 	"fmt"
-	"github.com/gatechain/crypto"
 	"strings"
 	"sync"
 )
@@ -57,8 +56,8 @@ type Coin struct {
 
 // StdSignature represents a sig
 type StdSignature struct {
-	crypto.PubKey `json:"pub_key" yaml:"pub_key"` // optional
-	Signature     []byte                          `json:"signature" yaml:"signature"`
+	PubKey    `json:"pub_key" yaml:"pub_key"` // optional
+	Signature []byte                          `json:"signature" yaml:"signature"`
 }
 
 type StdTx struct {

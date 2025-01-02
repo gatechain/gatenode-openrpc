@@ -1,12 +1,58 @@
 package header
 
+import "C"
 import (
-	"github.com/gatechain/crypto"
+	"crypto/sha512"
 )
+
+// DigestSize is the number of bytes in the preferred hash Digest used here.
+const DigestSize = sha512.Size384
+
+type (
+	// A VrfProof for a message can be generated with a secret key and verified against a public key, like a signature.
+	// Proofs are malleable, however, for a given message and public key, the VRF output that can be computed from a proof is unique.
+	VrfProof [80]uint8
+	// A VrfPubkey is a public key that can be used to verify VRF proofs.
+	VrfPubkey [32]uint8
+	Digest    [DigestSize]byte
+
+	Ed25519Signature  [64]byte
+	Ed25519PublicKey  [32]byte
+	Ed25519PrivateKey [64]byte
+	Ed25519Seed       [32]byte
+)
+
+// VRFVerifier is a deprecated name for VrfPubkey
+type VRFVerifier = VrfPubkey
+
+// A Signature is a cryptographic signature. It proves that a message was
+// produced by a holder of a cryptographic secret.
+type Signature Ed25519Signature
+
+// PublicKey is an exported Ed25519PublicKey
+type PublicKey Ed25519PublicKey
+
+// MultisigSig is the structure that holds multiple Subsigs
+type MultisigSig struct {
+	_struct struct{} `codec:",omitempty,omitemptyarray"`
+
+	Version   uint8            `codec:"v"`
+	Threshold uint8            `codec:"thr"`
+	Subsigs   []MultisigSubsig `codec:"subsig"`
+}
+
+// MultisigSubsig is a struct that holds a pair of public key and signatures
+// signatures may be empty
+type MultisigSubsig struct {
+	_struct struct{} `codec:",omitempty,omitemptyarray"`
+
+	Key PublicKey `codec:"pk"` // all public keys that are possible signers for this address
+	Sig Signature `codec:"s"`  // may be either empty or a signature
+}
 
 type (
 	// BlockHash represents the hash of a block
-	BlockHash crypto.Digest
+	BlockHash Digest
 
 	// Round represents a protocol round index
 	Round uint64
@@ -16,7 +62,7 @@ type (
 	Seed [48]byte
 
 	// Address is a unique identifier corresponding to ownership of money
-	Address crypto.Digest
+	Address Digest
 
 	HexBytes []byte
 
@@ -25,9 +71,9 @@ type (
 	// An UnauthenticatedCredential is a Credential which has not yet been
 	// authenticated.
 	UnauthenticatedCredential struct {
-		_struct   struct{}        `codec:",omitempty,omitemptyarray"`
-		Proof     crypto.VrfProof `codec:"pf"`
-		CredPower uint64          `codec:"cp"`
+		_struct   struct{} `codec:",omitempty,omitemptyarray"`
+		Proof     VrfProof `codec:"pf"`
+		CredPower uint64   `codec:"cp"`
 	}
 
 	// A OneTimeSignature is a cryptographic signature that is produced a limited
@@ -40,21 +86,21 @@ type (
 	// of a secret-key compromise.
 	OneTimeSignature struct {
 		// Sig is a signature of msg under the key PK.
-		Sig crypto.Ed25519Signature `codec:"s"`
-		PK  crypto.Ed25519PublicKey `codec:"p"`
+		Sig Ed25519Signature `codec:"s"`
+		PK  Ed25519PublicKey `codec:"p"`
 
 		// Old-style signature that does not use proper domain separation.
 		// PKSigOld is unused; however, unfortunately we forgot to mark it
 		// `codec:omitempty` and so it appears (with zero value) in certs.
 		// This means we can't delete the field without breaking catchup.
-		PKSigOld crypto.Ed25519Signature `codec:"ps"`
+		PKSigOld Ed25519Signature `codec:"ps"`
 
 		// Used to verify a new-style two-level ephemeral signature.
 		// PK1Sig is a signature of OneTimeSignatureSubkeyOffsetID(PK, Batch, Offset) under the key PK2.
 		// PK2Sig is a signature of OneTimeSignatureSubkeyBatchID(PK2, Batch) under the master key (OneTimeSignatureVerifier).
-		PK2    crypto.Ed25519PublicKey `codec:"p2"`
-		PK1Sig crypto.Ed25519Signature `codec:"p1s"`
-		PK2Sig crypto.Ed25519Signature `codec:"p2s"`
+		PK2    Ed25519PublicKey `codec:"p2"`
+		PK1Sig Ed25519Signature `codec:"p1s"`
+		PK2Sig Ed25519Signature `codec:"p2s"`
 	}
 
 	Payset []SignedTxnInBlock
@@ -108,10 +154,10 @@ type (
 	SignedTxn struct {
 		_struct struct{} `codec:",omitempty,omitemptyarray"`
 
-		Sig  crypto.Signature   `codec:"sig"`
-		Msig crypto.MultisigSig `codec:"msig"`
-		Lsig LogicSig           `codec:"lsig"`
-		Txn  Transaction        `codec:"txn"`
+		Sig  Signature   `codec:"sig"`
+		Msig MultisigSig `codec:"msig"`
+		Lsig LogicSig    `codec:"lsig"`
+		Txn  Transaction `codec:"txn"`
 
 		// The length of the encoded SignedTxn, used for computing the
 		// transaction's priority in the transaction pool.
@@ -124,8 +170,8 @@ type (
 		// Logic signed by Sig or Msig, OR hashed to be the Address of an account.
 		Logic []byte `codec:"l"`
 
-		Sig  crypto.Signature   `codec:"sig"`
-		Msig crypto.MultisigSig `codec:"msig"`
+		Sig  Signature   `codec:"sig"`
+		Msig MultisigSig `codec:"msig"`
 
 		// Args are not signed, but checked by Logic
 		Args [][]byte `codec:"arg"`
@@ -157,7 +203,7 @@ type (
 	}
 
 	// Txid is a hash used to uniquely identify individual transactions
-	Txid crypto.Digest
+	Txid Digest
 
 	// AssetTransferTxnFields captures the fields used for asset transfers.
 	AssetTransferTxnFields struct {
@@ -277,14 +323,14 @@ type (
 		CloseRemainderTo Address `codec:"close"`
 	}
 
-	OneTimeSignatureVerifier crypto.Ed25519PublicKey
+	OneTimeSignatureVerifier Ed25519PublicKey
 
 	// KeyregTxnFields captures the fields used for key registration transactions.
 	KeyregTxnFields struct {
 		_struct struct{} `codec:",omitempty,omitemptyarray"`
 
 		VotePK           OneTimeSignatureVerifier `codec:"votekey"`
-		SelectionPK      crypto.VRFVerifier       `codec:"selkey"`
+		SelectionPK      VRFVerifier              `codec:"selkey"`
 		VoteFirst        Round                    `codec:"votefst"`
 		VoteLast         Round                    `codec:"votelst"`
 		VoteKeyDilution  uint64                   `codec:"votekd"`
@@ -296,18 +342,18 @@ type (
 	Header struct {
 		_struct struct{} `codec:",omitempty,omitemptyarray"`
 
-		Sender      Address       `codec:"snd"`
-		Fee         Power         `codec:"fee"`
-		FirstValid  Round         `codec:"fv"`
-		LastValid   Round         `codec:"lv"`
-		Note        []byte        `codec:"note"` // Uniqueness or app-level data about txn
-		GenesisID   string        `codec:"gen"`
-		GenesisHash crypto.Digest `codec:"gh"`
+		Sender      Address `codec:"snd"`
+		Fee         Power   `codec:"fee"`
+		FirstValid  Round   `codec:"fv"`
+		LastValid   Round   `codec:"lv"`
+		Note        []byte  `codec:"note"` // Uniqueness or app-level data about txn
+		GenesisID   string  `codec:"gen"`
+		GenesisHash Digest  `codec:"gh"`
 
 		// Group specifies that this transaction is part of a
 		// transaction group (and, if so, specifies the hash
 		// of a TxGroup).
-		Group crypto.Digest `codec:"grp"`
+		Group Digest `codec:"grp"`
 
 		// Lease enforces mutual exclusion of transactions.  If this field is
 		// nonzero, then once the transaction is confirmed, it acquires the
@@ -338,7 +384,7 @@ type (
 		// More specifically, it's the root of a merkle tree whose leaves are the block's Txids.
 		// Note that the TxnRoot does not authenticate the signatures on the transactions, only the transactions themselves.
 		// Two blocks with the same transactions but with different signatures will have the same TxnRoot.
-		TxnRoot crypto.Digest `codec:"txn"`
+		TxnRoot Digest `codec:"txn"`
 
 		// TimeStamp in seconds since epoch
 		TimeStamp int64 `codec:"ts"`
@@ -347,7 +393,7 @@ type (
 		GenesisID string `codec:"gen"`
 
 		// Genesis hash to which this block belongs.
-		GenesisHash crypto.Digest `codec:"gh"`
+		GenesisHash Digest `codec:"gh"`
 
 		//
 		// Each block is associated with a version of the consensus protocol,
@@ -448,8 +494,8 @@ type (
 	EquivocationProposalValue struct {
 		OriginalPeriod   uint64
 		OriginalProposer Address
-		BlockDigest      crypto.Digest
-		EncodingDigest   crypto.Digest
+		BlockDigest      Digest
+		EncodingDigest   Digest
 	}
 
 	Equivocations struct {
@@ -487,10 +533,36 @@ type (
 // Hash returns the hash of a block header.
 // The hash of a block is the hash of its header.
 func (bh BlockHeader) Hash() BlockHash {
-	return BlockHash(crypto.HashObj(bh))
+	return BlockHash(HashObj(bh))
 }
 
 // ToBeHashed implements the crypto.Hashable interface
-func (bh BlockHeader) ToBeHashed() (crypto.HashID, []byte) {
-	return crypto.HashID("BH"), Encode(bh)
+func (bh BlockHeader) ToBeHashed() (HashID, []byte) {
+	return HashID("BH"), Encode(bh)
+}
+
+// HashID is a domain separation prefix for an object type that might be hashed
+// This ensures, for example, the hash of a transaction will never collide with the hash of a vote
+type HashID string
+
+// Hash computes the SHASum384 hash of an array of bytes
+func Hash(data []byte) Digest {
+	return sha512.Sum384(data)
+}
+
+func HashRep(h Hashable) []byte {
+	hashid, data := h.ToBeHashed()
+	return append([]byte(hashid), data...)
+}
+
+// Hashable is an interface implemented by an object that can be represented
+// with a sequence of bytes to be hashed or signed, together with a type ID
+// to distinguish different types of objects.
+type Hashable interface {
+	ToBeHashed() (HashID, []byte)
+}
+
+// HashObj computes a hash of a Hashable object and its type
+func HashObj(h Hashable) Digest {
+	return Hash(HashRep(h))
 }

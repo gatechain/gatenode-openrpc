@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/gatechain/crypto"
-
 	"github.com/celestiaorg/go-header"
 
 	"github.com/gatechain/gatenode-openrpc/types/core"
@@ -58,7 +56,7 @@ func (eh *ExtendedHeader) ChainID() string {
 }
 
 func (eh *ExtendedHeader) Hash() header.Hash {
-	var h48 = crypto.Digest(eh.RawHeader.Hash())
+	var h48 = Digest(eh.RawHeader.Hash())
 	return h48[:]
 }
 
@@ -67,7 +65,7 @@ func (eh *ExtendedHeader) Height() uint64 {
 }
 
 func (eh *ExtendedHeader) LastHeader() header.Hash {
-	var h48 = crypto.Digest(eh.RawHeader.Branch)
+	var h48 = Digest(eh.RawHeader.Branch)
 	return h48[:]
 }
 
