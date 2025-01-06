@@ -536,23 +536,18 @@ func (bh BlockHeader) Hash() BlockHash {
 	return BlockHash(HashObj(bh))
 }
 
+// HashID is a domain separation prefix for an object type that might be hashed
+// This ensures, for example, the hash of a transaction will never collide with the hash of a vote
+type HashID string
+
 // ToBeHashed implements the crypto.Hashable interface
 func (bh BlockHeader) ToBeHashed() (HashID, []byte) {
 	return HashID("BH"), Encode(bh)
 }
 
-// HashID is a domain separation prefix for an object type that might be hashed
-// This ensures, for example, the hash of a transaction will never collide with the hash of a vote
-type HashID string
-
 // Hash computes the SHASum384 hash of an array of bytes
 func Hash(data []byte) Digest {
 	return sha512.Sum384(data)
-}
-
-func HashRep(h Hashable) []byte {
-	hashid, data := h.ToBeHashed()
-	return append([]byte(hashid), data...)
 }
 
 // Hashable is an interface implemented by an object that can be represented
@@ -560,6 +555,11 @@ func HashRep(h Hashable) []byte {
 // to distinguish different types of objects.
 type Hashable interface {
 	ToBeHashed() (HashID, []byte)
+}
+
+func HashRep(h Hashable) []byte {
+	hashid, data := h.ToBeHashed()
+	return append([]byte(hashid), data...)
 }
 
 // HashObj computes a hash of a Hashable object and its type
