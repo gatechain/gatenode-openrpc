@@ -11,7 +11,7 @@ go get github.com/gatechain/gatenode-openrpc
 ```
 
 要使用以下方法，你将需要节点的 URL 以及你的认证令牌。要获取你的认证令牌，请查看相关指南。若要在启动节点时不使用认证令牌运行节点，你可以在启动节点时使用 “--rpc.skip-auth” 标志。这样你就可以将空字符串作为你的认证令牌传入。
-默认的 URL 是http://localhost:26658。如果你想使用订阅方法，比如下文提到的 “SubscribeHeaders” 方法，你必须使用 “ws” 协议来替代 “http” 协议，即使用 “ws://localhost:26658”。
+默认的 URL 是 http://localhost:26658。 如果你想使用订阅方法，比如下文提到的 “SubscribeHeaders” 方法，你必须使用 “ws” 协议来替代 “http” 协议，即使用 “ws://localhost:26658”。
 
 ## 提交和检索Blobs
 “blob.Submit” 方法接收一组Blobs，以及一个 gas 价格作为参数，并返回成功提交Blob时的区块高度。
