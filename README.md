@@ -16,7 +16,6 @@ import (
 	client "github.com/gatechain/gatenode-openrpc"
 	"github.com/gatechain/gatenode-openrpc/types/blob"
 	"github.com/gatechain/gatenode-openrpc/types/share"
-	"github.com/celestiaorg/rsmt2d"
 )
 
 func main() {
@@ -30,8 +29,8 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 		return err
 	}
 
-	// let's post to 0xDEADBEEF namespace
-	namespace, err := share.NewBlobNamespaceV0([]byte{0xDE, 0xAD, 0xBE, 0xEF})
+	// let's post to test namespace
+	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
 	if err != nil {
 		return err
 	}
@@ -43,7 +42,7 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 	}
 
 	// submit the blob to the network
-	height, err := client.Blob.Submit(ctx, []*blob.Blob{helloWorldBlob}, blob.DefaultGasPrice())
+	height, err := client.Blob.Submit(ctx, []*blob.Blob{helloWorldBlob}, blob.NewSubmitOptions(blob.WithGasPrice(blob.DefaultGasPrice)))
 	if err != nil {
 		return err
 	}
