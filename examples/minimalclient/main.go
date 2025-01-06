@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/gatechain/gatenode-openrpc/types/blob"
 	"github.com/gatechain/gatenode-openrpc/types/share"
@@ -26,17 +27,15 @@ func main() {
 
 	err := SubmitBlob(ctx, url, token)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 }
-
-const AuthKey = "Authorization"
 
 type Client struct {
 	Blob blob.API
 }
 
-// SubmitBlob submits a blob containing "Hello, World!" to the 0xDEADBEEF namespace. It uses the default signer on the running node.
+// SubmitBlob submits a blob containing "Hello, World!" to the test namespace. It uses the default signer on the running node.
 func SubmitBlob(ctx context.Context, url string, token string) error {
 	var client Client
 	constructedClient, err := clientbuilder.NewClient(ctx, url, token, client)

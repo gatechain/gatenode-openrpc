@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/celestiaorg/rsmt2d"
 	client "github.com/gatechain/gatenode-openrpc"
@@ -18,12 +19,12 @@ func main() {
 
 	err := SubmitBlob(ctx, url, token)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 	eds, err := GetEDS(ctx, url, token, 500)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	fmt.Println(eds.FlattenedODS())
 }
@@ -35,8 +36,8 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 		return err
 	}
 
-	// let's post to 0xDEADBEEF namespace
-	namespace, err := share.NewBlobNamespaceV0([]byte{0xDE, 0xAD, 0xBE, 0xEF})
+	// let's post to test namespace
+	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
 	if err != nil {
 		return err
 	}

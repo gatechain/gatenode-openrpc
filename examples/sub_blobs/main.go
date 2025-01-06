@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 type JsonRPCRequest struct {
@@ -41,6 +43,7 @@ func main() {
 	}
 
 	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		for {
