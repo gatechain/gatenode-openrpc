@@ -38,14 +38,14 @@ type Client struct {
 // SubmitBlob submits a blob containing "Hello, World!" to the test namespace. It uses the default signer on the running node.
 func SubmitBlob(ctx context.Context, url string, token string) error {
 	var client Client
-	constructedClient, err := clientbuilder.NewClient(ctx, url, token, client)
+	constructedClient, err := clientbuilder.NewClient(ctx, url, token, &client)
 	if err != nil {
 		return err
 	}
 
-	client = constructedClient.(Client)
+	client = *(constructedClient.(*Client))
 
-	// let's post to 0xDEADBEEF namespace
+	// let's post to test namespace
 	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
 	if err != nil {
 		return err
