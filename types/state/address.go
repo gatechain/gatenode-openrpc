@@ -6,23 +6,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+
 	"golang.org/x/crypto/sha3"
 	"gopkg.in/yaml.v2"
-	"strings"
 )
 
 const (
 	// Constants defined here are the defaults value for address.
 	// You can use the specific values for your project.
 	// Add the follow lines to the `main()` of your server.
-	//
-	//	config := framework.GetConfig()
-	//	config.SetBech32PrefixForAccount(yourBech32PrefixAccAddr, yourBech32PrefixAccPub)
-	//	config.SetBech32PrefixForValidator(yourBech32PrefixValAddr, yourBech32PrefixValPub)
-	//	config.SetBech32PrefixForConsensusNode(yourBech32PrefixConsAddr, yourBech32PrefixConsPub)
-	//	config.SetCoinType(yourCoinType)
-	//	config.SetFullFundraiserPath(yourFullFundraiserPath)
-	//	config.Seal()
 
 	// AddrLen defines a valid address length
 	AddrLen = 40
