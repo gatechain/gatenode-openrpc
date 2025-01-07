@@ -15,8 +15,6 @@ import (
 const (
 	// Constants defined here are the defaults value for address.
 	// You can use the specific values for your project.
-	// Add the follow lines to the `main()` of your server.
-
 	// AddrLen defines a valid address length
 	AddrLen = 40
 	//Eth Addr length

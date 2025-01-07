@@ -1,14 +1,15 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"log"
-	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
+
+	client "github.com/gatechain/gatenode-openrpc"
+	"github.com/gatechain/gatenode-openrpc/types/share"
 )
 
 type JsonRPCRequest struct {
@@ -19,25 +20,21 @@ type JsonRPCRequest struct {
 }
 
 func main() {
-	u := url.URL{Scheme: "ws", Host: "localhost:26658", Path: "/"}
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	ctx := context.Background()
+	client, err := client.NewClient(ctx, "ws://localhost:26658", "")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer c.Close()
+	defer client.Close()
 
-	request := JsonRPCRequest{
-		ID:      1,
-		JsonRPC: "2.0",
-		Method:  "blob.Subscribe",
-		Params:  []string{"AAAAAAAAAAAAAAAAAAAAAAAAAEJpDCBNOWAP3dM="},
-	}
-	requestBytes, err := json.Marshal(request)
+	// create a namespace to filter blobs with
+	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = c.WriteMessage(websocket.BinaryMessage, requestBytes)
+	// subscribe to new blobs using a <-chan *blob.SubscriptionResponse channel
+	blobChan, err := client.Blob.Subscribe(ctx, namespace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,16 +42,13 @@ func main() {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
-	go func() {
-		for {
-			_, msg, err := c.ReadMessage()
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(string(msg))
+	for {
+		select {
+		case resp := <-blobChan:
+			fmt.Printf("Found %d blobs at height %d in test namespace\n", len(resp.Blobs), resp.Height)
+		case <-ch:
+			fmt.Println("\r\nExiting...")
+			return
 		}
-	}()
-
-	<-ch
-	fmt.Println("\r\nExiting...")
+	}
 }

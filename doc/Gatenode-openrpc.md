@@ -88,7 +88,7 @@ func SubscribeBlobs(ctx context.Context, url string, token string) error {
 		return err
 	}
 
-	// subscribe to new blobs using a <-chan *blob.BlobResponse channel
+	// subscribe to new blobs using a <-chan *blob.SubscriptionResponse channel
 	blobChan, err := client.Blob.Subscribe(ctx, namespace)
 	if err != nil {
 		return err

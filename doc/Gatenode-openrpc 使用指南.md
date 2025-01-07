@@ -86,7 +86,7 @@ func SubscribeBlobs(ctx context.Context, url string, token string) error {
         return err
     }
 
-    // 使用一个<-chan *blob.BlobResponse通道来订阅新的Blobs
+    // 使用一个<-chan *blob.SubscriptionResponse通道来订阅新的Blobs
     blobChan, err := client.Blob.Subscribe(ctx, namespace)
     if err != nil {
         return err
