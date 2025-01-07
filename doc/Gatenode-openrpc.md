@@ -19,7 +19,7 @@ The blob.Submit method takes a slice of blobs and a gas price, returning the hei
 
 The namespace can be generated with share.NewBlobNamespaceV0.
 The blobs can be generated with blob.NewBlobV0.
-You can use blob.NewSubmitOptions(), which has gatenode automatically determine an appropriate gas price. To set your own gas price, use blob.NewSubmitOptions().WithGasPrice(X). The available options are WithGasPrice, WithGas, WithKeyName, and WithSignerAddress.
+You can use blob.NewSubmitOptions(), which has gatenode automatically determine an appropriate gas price. To set your own gas price, use blob.NewSubmitOptions(blob.WithGasPrice(X)). The available options are WithGasPrice, WithGas, WithKeyName, and WithSignerAddress.
 The blob.GetAll method takes a height and slice of namespaces, returning the slice of blobs found in the given namespaces.
 
 ```go
