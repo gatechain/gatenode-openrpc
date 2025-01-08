@@ -58,8 +58,6 @@ func (n Namespace) ID() namespace.ID {
 	return namespace.ID(n[appns.NamespaceVersionSize:])
 }
 
-// ToNMT converts the whole Namespace(both Version and ID parts) into NMT's namespace.ID
-// NOTE: Once https://github.com/celestiaorg/nmt/issues/206 is closed Namespace should become NNT's
 // type.
 func (n Namespace) ToNMT() namespace.ID {
 	return namespace.ID(n)

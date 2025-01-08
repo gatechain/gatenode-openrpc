@@ -13,21 +13,9 @@ import (
 	"github.com/gatechain/gatenode-openrpc/types/proofs"
 	"github.com/gatechain/gatenode-openrpc/types/share"
 
-	"github.com/celestiaorg/go-square/blob"
+	squareBlob "github.com/celestiaorg/go-square/blob"
 	"github.com/celestiaorg/go-square/inclusion"
 	"github.com/celestiaorg/go-square/merkle"
-)
-
-const (
-	// NMTIgnoreMaxNamespace is currently used value for IgnoreMaxNamespace option in NMT.
-	// IgnoreMaxNamespace defines whether the largest possible Namespace MAX_NID should be 'ignored'.
-	// If set to true, this allows for shorter proofs in particular use-cases.
-	NMTIgnoreMaxNamespace = true
-)
-
-var (
-	ErrBlobNotFound = errors.New("blob: not found")
-	ErrInvalidProof = errors.New("blob: invalid proof")
 )
 
 // CommitmentProof is an inclusion proof of a commitment to the data root.
@@ -73,9 +61,9 @@ type Proof []*nmt.Proof
 
 func (p Proof) Len() int { return len(p) }
 
-// Blob represents any application-specific binary data that anyone can submit to Celestia.
+// Blob represents any application-specific binary data that anyone can submit to Gatenode.
 type Blob struct {
-	blob.Blob `json:"blob"`
+	squareBlob.Blob `json:"blob"`
 
 	Commitment Commitment `json:"commitment"`
 
@@ -103,7 +91,7 @@ func NewBlob(shareVersion uint8, namespace share.Namespace, data []byte) (*Blob,
 		return nil, err
 	}
 
-	blob := blob.Blob{
+	blob := squareBlob.Blob{
 		NamespaceId:      namespace.ID(),
 		Data:             data,
 		ShareVersion:     uint32(shareVersion),

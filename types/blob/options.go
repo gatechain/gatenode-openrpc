@@ -12,7 +12,7 @@ import (
 const (
 	// DefaultGasPrice specifies the default gas price value to be used when the user
 	// wants to use the global minimal gas price, which is fetched from the gatechain.
-	DefaultGasPrice float64 = -1.0
+	DefaultGasPrice float64 = 10
 )
 
 // NewSubmitOptions constructs a new SubmitOptions with the provided options.
@@ -46,9 +46,6 @@ type SubmitOptions struct {
 	isGasPriceSet bool
 	// 0 gas means users want us to calculate it for them.
 	gas uint64
-	// Specifies the account that will pay for the transaction.
-	// Input format Bech32.
-	feeGranterAddress string
 }
 
 func (cfg *SubmitOptions) GasPrice() float64 {
@@ -64,8 +61,6 @@ func (cfg *SubmitOptions) KeyName() string { return cfg.keyName }
 
 func (cfg *SubmitOptions) SignerAddress() string { return cfg.signerAddress }
 
-func (cfg *SubmitOptions) FeeGranterAddress() string { return cfg.feeGranterAddress }
-
 type jsonTxConfig struct {
 	GasPrice          float64 `json:"gas_price,omitempty"`
 	IsGasPriceSet     bool    `json:"is_gas_price_set,omitempty"`
@@ -77,12 +72,11 @@ type jsonTxConfig struct {
 
 func (cfg *SubmitOptions) MarshalJSON() ([]byte, error) {
 	jsonOpts := &jsonTxConfig{
-		SignerAddress:     cfg.signerAddress,
-		KeyName:           cfg.keyName,
-		GasPrice:          cfg.gasPrice,
-		IsGasPriceSet:     cfg.isGasPriceSet,
-		Gas:               cfg.gas,
-		FeeGranterAddress: cfg.feeGranterAddress,
+		SignerAddress: cfg.signerAddress,
+		KeyName:       cfg.keyName,
+		GasPrice:      cfg.gasPrice,
+		IsGasPriceSet: cfg.isGasPriceSet,
+		Gas:           cfg.gas,
 	}
 	return json.Marshal(jsonOpts)
 }
@@ -99,7 +93,6 @@ func (cfg *SubmitOptions) UnmarshalJSON(data []byte) error {
 	cfg.gasPrice = jsonOpts.GasPrice
 	cfg.isGasPriceSet = jsonOpts.IsGasPriceSet
 	cfg.gas = jsonOpts.Gas
-	cfg.feeGranterAddress = jsonOpts.FeeGranterAddress
 	return nil
 }
 
@@ -141,12 +134,5 @@ func WithKeyName(key string) ConfigOption {
 func WithSignerAddress(address string) ConfigOption {
 	return func(cfg *SubmitOptions) {
 		cfg.signerAddress = address
-	}
-}
-
-// WithFeeGranterAddress is an option that allows you to specify a GranterAddress to pay the fees.
-func WithFeeGranterAddress(granter string) ConfigOption {
-	return func(cfg *SubmitOptions) {
-		cfg.feeGranterAddress = granter
 	}
 }

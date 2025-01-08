@@ -1,17 +1,12 @@
 package appconsts
 
 import (
-	"math"
-
 	"github.com/celestiaorg/rsmt2d"
 )
 
 const (
 	// NamespaceVersionSize is the size of a namespace version in bytes.
 	NamespaceVersionSize = 1
-	// NamespaceVersionMaxValue is the maximum value a namespace version can be.
-	// This const must be updated if NamespaceVersionSize is changed.
-	NamespaceVersionMaxValue = math.MaxUint8
 
 	// NamespaceIDSize is the size of a namespace ID in bytes.
 	NamespaceIDSize = 28
@@ -33,21 +28,9 @@ const (
 	// ShareVersionZero is the first share version format.
 	ShareVersionZero = uint8(0)
 
-	// DefaultShareVersion is the defacto share version. Use this if you are
-	// unsure of which version to use.
-	DefaultShareVersion = ShareVersionZero
-
 	// CompactShareReservedBytes is the number of bytes reserved for the location of
 	// the first unit (transaction, ISR) in a compact share.
 	CompactShareReservedBytes = 4
-
-	// FirstCompactShareContentSize is the number of bytes usable for data in
-	// the first compact share of a sequence.
-	FirstCompactShareContentSize = ShareSize - NamespaceSize - ShareInfoBytes - SequenceLenBytes - CompactShareReservedBytes
-
-	// ContinuationCompactShareContentSize is the number of bytes usable for
-	// data in a continuation compact share of a sequence.
-	ContinuationCompactShareContentSize = ShareSize - NamespaceSize - ShareInfoBytes - CompactShareReservedBytes
 
 	// FirstSparseShareContentSize is the number of bytes usable for data in the
 	// first sparse share of a sequence.
@@ -56,13 +39,6 @@ const (
 	// ContinuationSparseShareContentSize is the number of bytes usable for data
 	// in a continuation sparse share of a sequence.
 	ContinuationSparseShareContentSize = ShareSize - NamespaceSize - ShareInfoBytes
-
-	// MinSquareSize is the smallest original square width.
-	MinSquareSize = 1
-
-	// MinshareCount is the minimum number of shares allowed in the original
-	// data square.
-	MinShareCount = MinSquareSize * MinSquareSize
 
 	// MaxShareVersion is the maximum value a share version can be.
 	MaxShareVersion = 127

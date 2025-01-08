@@ -1,49 +1,33 @@
-package main
+# gatenode-openrpc
 
+
+## Examples
+
+For more examples, see the [examples](./examples) directory.
+
+### Create a new client and submit and fetch a blob
+
+```go
 import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
 
+	client "github.com/gatechain/gatenode-openrpc"
 	"github.com/gatechain/gatenode-openrpc/types/blob"
 	"github.com/gatechain/gatenode-openrpc/types/share"
-
-	clientbuilder "github.com/gatechain/gatenode-openrpc/builder"
 )
 
-/*
-	This example demonstrates how to create a client that is only
-	dependent on the blob and share types from this library.
-
-	This is useful for environments where dependencies should be
-	kept to a minimum.
-*/
-
 func main() {
-	ctx := context.Background()
-	url := "ws://localhost:26658"
-	token := ""
-
-	err := SubmitBlob(ctx, url, token)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-type Client struct {
-	Blob blob.API
+	SubmitBlob(context.Background(), "ws://localhost:26658", "JWT_TOKEN")
 }
 
 // SubmitBlob submits a blob containing "Hello, World!" to the test namespace. It uses the default signer on the running node.
 func SubmitBlob(ctx context.Context, url string, token string) error {
-	var client Client
-	constructedClient, err := clientbuilder.NewClient(ctx, url, token, &client)
+	client, err := client.NewClient(ctx, url, token)
 	if err != nil {
 		return err
 	}
-
-	client = *(constructedClient.(*Client))
 
 	// let's post to test namespace
 	namespace, err := share.NewBlobNamespaceV0([]byte("test"))
@@ -58,7 +42,7 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 	}
 
 	// submit the blob to the network
-	height, err := client.Blob.Submit(ctx, []*blob.Blob{helloWorldBlob}, blob.NewSubmitOptions())
+	height, err := client.Blob.Submit(ctx, []*blob.Blob{helloWorldBlob}, blob.NewSubmitOptions(blob.WithGasPrice(blob.DefaultGasPrice)))
 	if err != nil {
 		return err
 	}
@@ -74,3 +58,4 @@ func SubmitBlob(ctx context.Context, url string, token string) error {
 	fmt.Printf("Blobs are equal? %v\n", bytes.Equal(helloWorldBlob.Commitment, retrievedBlobs[0].Commitment))
 	return nil
 }
+```

@@ -5,46 +5,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/celestiaorg/rsmt2d"
 	"github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/merkle"
 	cmbytes "github.com/cometbft/cometbft/libs/bytes"
-	cmversion "github.com/cometbft/cometbft/proto/tendermint/version"
-
-	"github.com/celestiaorg/rsmt2d"
 )
-
-// Header defines the structure of a Tendermint block header.
-// NOTE: changes to the Header should be duplicated in:
-// - header.Hash()
-// - abci.Header
-// - https://github.com/tendermint/tendermint/blob/v0.34.x/spec/blockchain/blockchain.md
-type Header struct {
-	// basic block info
-	Version cmversion.Consensus `json:"version"`
-	ChainID string              `json:"chain_id"`
-	Height  int64               `json:"height,string"`
-	Time    time.Time           `json:"time"`
-
-	// prev block info
-	LastBlockID BlockID `json:"last_block_id"`
-
-	// hashes of block data
-	LastCommitHash cmbytes.HexBytes `json:"last_commit_hash"` // commit from validators from the last block
-	DataHash       cmbytes.HexBytes `json:"data_hash"`        // transactions
-
-	// hashes from the app output from the prev block
-	ValidatorsHash     cmbytes.HexBytes `json:"validators_hash"`      // validators for the current block
-	NextValidatorsHash cmbytes.HexBytes `json:"next_validators_hash"` // validators for the next block
-	ConsensusHash      cmbytes.HexBytes `json:"consensus_hash"`       // consensus params for current block
-	AppHash            cmbytes.HexBytes `json:"app_hash"`             // state after txs from the previous block
-	// root hash of all results from the txs from the previous block
-	// see `deterministicResponseDeliverTx` to understand which parts of a tx is hashed into here
-	LastResultsHash cmbytes.HexBytes `json:"last_results_hash"`
-
-	// consensus info
-	EvidenceHash    cmbytes.HexBytes `json:"evidence_hash"`    // evidence included in the block
-	ProposerAddress Address          `json:"proposer_address"` // original proposer of the block
-}
 
 // BlockID
 type BlockID struct {
