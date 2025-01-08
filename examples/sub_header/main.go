@@ -12,13 +12,6 @@ import (
 	"github.com/gatechain/gatenode-openrpc/types/share"
 )
 
-type JsonRPCRequest struct {
-	ID      int      `json:"id"`
-	JsonRPC string   `json:"jsonrpc"`
-	Method  string   `json:"method"`
-	Params  []string `json:"params"`
-}
-
 func main() {
 	ctx := context.Background()
 	client, err := client.NewClient(ctx, "ws://localhost:26658", "")
